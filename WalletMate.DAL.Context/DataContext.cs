@@ -6,6 +6,13 @@ namespace WalletMate.DAL.Context;
 
 public class DataContext(DbContextOptions options) : DbContext(options), IDataContext
 {
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.ApplyConfigurationsFromAssembly(GetType().Assembly);
+
+        base.OnModelCreating(modelBuilder);
+    }
+    
     public DbSet<Account> Account { get; set; }
     public DbSet<Category> Category { get; set; }
     public DbSet<Transaction> Transaction { get; set; }

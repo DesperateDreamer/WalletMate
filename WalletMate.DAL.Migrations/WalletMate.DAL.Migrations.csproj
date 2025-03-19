@@ -6,4 +6,8 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\WalletMate.DAL.Context\WalletMate.DAL.Context.csproj" />
+    </ItemGroup>
+
 </Project>
