@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using WalletMate.DAL.Entities;
 
 namespace WalletMate.DAL.Context.Abstract;
@@ -9,4 +10,6 @@ public interface IDataContext
     DbSet<Category> Category { get; set; }
     DbSet<Transaction> Transaction { get; set; }
     DbSet<User> User { get; set; }
+    
+    DatabaseFacade Database { get; }
 }
