@@ -21,6 +21,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\WalletMate.DAL.Context\WalletMate.DAL.Context.csproj" />
+      <ProjectReference Include="..\WalletMate.DAL.Migrations\WalletMate.DAL.Migrations.csproj" />
     </ItemGroup>
 
 </Project>
