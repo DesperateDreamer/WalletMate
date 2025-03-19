@@ -11,4 +11,6 @@ public class Transaction : BaseEntity
 
     public Guid AccountId { get; set; }
     public Account Account { get; set; } = null!;
+
+    public List<TransactionCategory> TransactionCategories { get; set; } = [];
 }

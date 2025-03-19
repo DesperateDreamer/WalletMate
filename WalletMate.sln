@@ -4,6 +4,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WalletMate.API", "WalletMat
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WalletMate.DAL.Entities", "WalletMate.DAL.Entities\WalletMate.DAL.Entities.csproj", "{2D77C5B1-CC30-403D-92F6-D8DA86A6A729}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WalletMate.DAL.Context", "WalletMate.DAL.Context\WalletMate.DAL.Context.csproj", "{AD8A9183-C726-4AF5-BC26-40BC940006EA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WalletMate.DAL.Migrations", "WalletMate.DAL.Migrations\WalletMate.DAL.Migrations.csproj", "{4A73641B-7B1A-4709-A19C-27BCC67D1C15}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +22,13 @@ Global
 		{2D77C5B1-CC30-403D-92F6-D8DA86A6A729}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2D77C5B1-CC30-403D-92F6-D8DA86A6A729}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2D77C5B1-CC30-403D-92F6-D8DA86A6A729}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AD8A9183-C726-4AF5-BC26-40BC940006EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AD8A9183-C726-4AF5-BC26-40BC940006EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AD8A9183-C726-4AF5-BC26-40BC940006EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AD8A9183-C726-4AF5-BC26-40BC940006EA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4A73641B-7B1A-4709-A19C-27BCC67D1C15}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4A73641B-7B1A-4709-A19C-27BCC67D1C15}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4A73641B-7B1A-4709-A19C-27BCC67D1C15}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4A73641B-7B1A-4709-A19C-27BCC67D1C15}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
