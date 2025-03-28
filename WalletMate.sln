@@ -10,6 +10,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WalletMate.DAL.Migrations",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WalletMate.BLL.Shared", "WalletMate.BLL.Shared\WalletMate.BLL.Shared.csproj", "{0A55C21F-10C6-40EF-9294-2C342511BCC0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WalletMate.BLL.Domain", "WalletMate.BLL.Domain\WalletMate.BLL.Domain.csproj", "{D805778C-425B-4CAB-A0A6-35BA31AC6221}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,5 +38,9 @@ Global
 		{0A55C21F-10C6-40EF-9294-2C342511BCC0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0A55C21F-10C6-40EF-9294-2C342511BCC0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0A55C21F-10C6-40EF-9294-2C342511BCC0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D805778C-425B-4CAB-A0A6-35BA31AC6221}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D805778C-425B-4CAB-A0A6-35BA31AC6221}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D805778C-425B-4CAB-A0A6-35BA31AC6221}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D805778C-425B-4CAB-A0A6-35BA31AC6221}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
