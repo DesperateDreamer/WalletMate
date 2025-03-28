@@ -1,6 +1,10 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using WalletMate.BLL.Shared;
+using WalletMate.BLL.Shared.Abstract;
 using WalletMate.DAL.Context;
 using WalletMate.DAL.Context.Abstract;
+using WalletMate.DAL.Entities;
 
 namespace WalletMate.API.Extensions;
 
@@ -8,9 +12,15 @@ public static class ConfigurationExtensions
 {
     public static void ConfigureInAppServices(this WebApplicationBuilder builder)
     {
+        builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
+        builder.Services.AddScoped<IPasswordService, PasswordService>();
+    }
+
+    public static void ConfigureDbContext(this WebApplicationBuilder builder)
+    {
         var connectionString = builder.Configuration.GetConnectionString("PostgresConnection");
         
-        builder.Services.AddDbContext<IDataContext, DataContext>((provider, options) =>
+        builder.Services.AddDbContext<IDataContext, DataContext>((_, options) =>
         {
             options
                 .UseNpgsql(connectionString, x => x.MigrationsAssembly("WalletMate.DAL.Migrations"));
