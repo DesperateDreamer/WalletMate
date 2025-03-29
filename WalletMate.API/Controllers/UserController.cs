@@ -19,7 +19,6 @@ public class UserController(IUserService userService) : ControllerBase
     public async Task<IActionResult> GetById(Guid id, CancellationToken cancellationToken)
     {
         var user = await userService.GetUserByIdAsync(id, cancellationToken);
-
         return Ok(user);
     }
 
@@ -27,7 +26,6 @@ public class UserController(IUserService userService) : ControllerBase
     public async Task<IActionResult> Create([FromBody] CreateUserDto dto, CancellationToken cancellationToken)
     {
         var newUserId = await userService.CreateUserAsync(dto, cancellationToken);
-
         return Ok(newUserId);
     }
 
@@ -35,7 +33,6 @@ public class UserController(IUserService userService) : ControllerBase
     public async Task<IActionResult> Update(Guid id, [FromBody] UpdateUserDto dto, CancellationToken cancellationToken)
     {
         var updatedUserId = await userService.UpdateUserAsync(id, dto, cancellationToken);
-        
         return Ok(updatedUserId);
     }
     
