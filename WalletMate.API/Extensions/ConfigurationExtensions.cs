@@ -1,5 +1,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
+using WalletMate.BLL.Domain;
+using WalletMate.BLL.Domain.Abstract;
 using WalletMate.BLL.Shared;
 using WalletMate.BLL.Shared.Abstract;
 using WalletMate.DAL.Context;
@@ -14,6 +17,20 @@ public static class ConfigurationExtensions
     {
         builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
         builder.Services.AddScoped<IPasswordService, PasswordService>();
+        builder.Services.AddScoped<IUserService, UserService>();
+    }
+    
+    public static void ConfigureSwagger(this WebApplicationBuilder builder)
+    {
+        builder.Services.AddSwaggerGen(options =>
+        {
+            options.CustomOperationIds(e => $"{e.ActionDescriptor.RouteValues["action"]}");
+            options.SwaggerDoc("v1", new OpenApiInfo
+            {
+                Title = "WalletMate API",
+                Version = "v1",
+            });
+        });
     }
 
     public static void ConfigureDbContext(this WebApplicationBuilder builder)
