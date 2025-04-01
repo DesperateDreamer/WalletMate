@@ -19,6 +19,7 @@ public static class ConfigurationExtensions
         builder.Services.AddScoped<IPasswordService, PasswordService>();
         builder.Services.AddScoped<IUserService, UserService>();
         builder.Services.AddScoped<ICategoryService, CategoryService>();
+        builder.Services.AddScoped<IAccountService, AccountService>();
     }
     
     public static void ConfigureSwagger(this WebApplicationBuilder builder)
