@@ -10,6 +10,7 @@ public interface IDataContext
     DbSet<Category> Category { get; set; }
     DbSet<Transaction> Transaction { get; set; }
     DbSet<User> User { get; set; }
+    DbSet<TransactionCategory> TransactionCategory { get; set; }
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
     
     DatabaseFacade Database { get; }

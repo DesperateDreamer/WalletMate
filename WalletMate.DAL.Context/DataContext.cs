@@ -17,4 +17,5 @@ public class DataContext(DbContextOptions options) : DbContext(options), IDataCo
     public DbSet<Category> Category { get; set; }
     public DbSet<Transaction> Transaction { get; set; }
     public DbSet<User> User { get; set; }
+    public DbSet<TransactionCategory> TransactionCategory { get; set; }
 }
