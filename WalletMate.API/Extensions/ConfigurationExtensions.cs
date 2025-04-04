@@ -1,5 +1,9 @@
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using WalletMate.BLL.Domain;
 using WalletMate.BLL.Domain.Abstract;
@@ -21,8 +25,10 @@ public static class ConfigurationExtensions
         builder.Services.AddScoped<ICategoryService, CategoryService>();
         builder.Services.AddScoped<IAccountService, AccountService>();
         builder.Services.AddScoped<ITransactionService, TransactionService>();
+        builder.Services.AddScoped<ITokenService, TokenService>();
+        builder.Services.AddScoped<IAuthService, AuthService>();
     }
-    
+
     public static void ConfigureSwagger(this WebApplicationBuilder builder)
     {
         builder.Services.AddSwaggerGen(options =>
@@ -33,13 +39,69 @@ public static class ConfigurationExtensions
                 Title = "WalletMate API",
                 Version = "v1",
             });
+            options.AddSecurityDefinition("BearerAuth", new OpenApiSecurityScheme
+            {
+                In = ParameterLocation.Header,
+                Description = "Please insert JWT with Bearer into field",
+                Name = "BearerAuth",
+                Type = SecuritySchemeType.Http,
+                BearerFormat = "JWT",
+                Scheme = "bearer",
+            });
+            options.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+                {
+                    new ()
+                    {
+                        Reference = new ()
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "BearerAuth",
+                        },
+                    },
+                    Array.Empty<string>()
+                },
+            });
         });
+    }
+
+    public static void ConfigureJwtAuthentication(this WebApplicationBuilder builder)
+    {
+        var jwtSettings = builder.Configuration.GetSection("Jwt");
+
+        builder.Services.AddAuthentication(options => 
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = jwtSettings["Issuer"],
+                    ValidAudience = jwtSettings["Audience"],
+                    IssuerSigningKey =
+                        new SymmetricSecurityKey(Encoding.ASCII.GetBytes(jwtSettings["Secret"] ?? string.Empty))
+                };
+            });
+    }
+    
+    public static void ConfigureAuthorization(this WebApplicationBuilder builder)
+    {
+        builder.Services.AddAuthorizationBuilder()
+            .SetDefaultPolicy(new AuthorizationPolicyBuilder(JwtBearerDefaults.AuthenticationScheme)
+                .RequireAuthenticatedUser()
+                .Build());
     }
 
     public static void ConfigureDbContext(this WebApplicationBuilder builder)
     {
         var connectionString = builder.Configuration.GetConnectionString("PostgresConnection");
-        
+
         builder.Services.AddDbContext<IDataContext, DataContext>((_, options) =>
         {
             options

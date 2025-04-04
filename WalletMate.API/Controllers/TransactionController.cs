@@ -1,9 +1,11 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WalletMate.BLL.Domain.Abstract;
 using WalletMate.BLL.Domain.DTOs;
 
 namespace WalletMate.API.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class TransactionController(ITransactionService transactionService) : ControllerBase

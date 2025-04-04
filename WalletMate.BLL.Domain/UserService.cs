@@ -78,13 +78,6 @@ public class UserService(IDataContext dataContext, IPasswordService passwordServ
         return user.Id;
     }
 
-    public async Task<bool> VerifyUserCredentialsAsync(string email, string password,
-        CancellationToken cancellationToken = default)
-    {
-        var user = await dataContext.User.FirstOrDefaultAsync(u => u.Email == email, cancellationToken);
-        return user is not null && passwordService.VerifyPassword(user, user.PasswordHash, password);
-    }
-
     public async Task<bool> ChangePasswordAsync(Guid userId, string currentPassword, string newPassword,
         CancellationToken cancellationToken = default)
     {

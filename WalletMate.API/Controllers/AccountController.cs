@@ -1,9 +1,11 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WalletMate.BLL.Domain.Abstract;
 using WalletMate.BLL.Domain.DTOs;
 
 namespace WalletMate.API.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class AccountController(IAccountService accountService) : ControllerBase
@@ -21,7 +23,7 @@ public class AccountController(IAccountService accountService) : ControllerBase
         var account = await accountService.GetAccountByIdAsync(id, cancellationToken);
         return Ok(account);
     }
-
+    
     [HttpPost]
     public async Task<ActionResult<Guid>> CreateAccount([FromBody] CreateAccountDto dto,
         CancellationToken cancellationToken)

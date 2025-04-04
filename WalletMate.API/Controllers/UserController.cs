@@ -1,9 +1,11 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WalletMate.BLL.Domain.Abstract;
 using WalletMate.BLL.Domain.DTOs;
 
 namespace WalletMate.API.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class UserController(IUserService userService) : ControllerBase
@@ -21,7 +23,8 @@ public class UserController(IUserService userService) : ControllerBase
         var user = await userService.GetUserByIdAsync(id, cancellationToken);
         return Ok(user);
     }
-
+    
+    [AllowAnonymous]
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateUserDto dto, CancellationToken cancellationToken)
     {
@@ -34,18 +37,6 @@ public class UserController(IUserService userService) : ControllerBase
     {
         var updatedUserId = await userService.UpdateUserAsync(id, dto, cancellationToken);
         return Ok(updatedUserId);
-    }
-    
-    [HttpPost("verify-credentials")]
-    public async Task<IActionResult> VerifyCredentials([FromBody] VerifyCredentialsDto loginDto, CancellationToken cancellationToken)
-    {
-        var isValid = await userService.VerifyUserCredentialsAsync(loginDto.Email, loginDto.Password, cancellationToken);
-        if (!isValid)
-        {
-            return Unauthorized("Invalid email or password.");
-        }
-
-        return Ok("Credentials verified successfully.");
     }
     
     [HttpPost("change-password")]

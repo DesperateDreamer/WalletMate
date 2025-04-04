@@ -9,7 +9,7 @@ namespace WalletMate.BLL.Domain;
 
 public class AccountService(IDataContext dataContext) : IAccountService
 {
-    public async Task<AccountDto?> GetAccountByIdAsync(Guid accountId, CancellationToken cancellationToken = default)
+    public async Task<AccountDto> GetAccountByIdAsync(Guid accountId, CancellationToken cancellationToken = default)
     {
         var account = await dataContext.Account
             .FirstOrDefaultAsync(a => a.Id == accountId, cancellationToken);
