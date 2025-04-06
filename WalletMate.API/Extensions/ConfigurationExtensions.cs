@@ -51,9 +51,9 @@ public static class ConfigurationExtensions
             options.AddSecurityRequirement(new OpenApiSecurityRequirement
             {
                 {
-                    new ()
+                    new OpenApiSecurityScheme
                     {
-                        Reference = new ()
+                        Reference = new OpenApiReference
                         {
                             Type = ReferenceType.SecurityScheme,
                             Id = "BearerAuth",
