@@ -12,6 +12,7 @@ using WalletMate.BLL.Shared.Abstract;
 using WalletMate.DAL.Context;
 using WalletMate.DAL.Context.Abstract;
 using WalletMate.DAL.Entities;
+using WalletMate.External.Monobank;
 
 namespace WalletMate.API.Extensions;
 
@@ -106,6 +107,15 @@ public static class ConfigurationExtensions
         {
             options
                 .UseNpgsql(connectionString, x => x.MigrationsAssembly("WalletMate.DAL.Migrations"));
+        });
+    }
+
+    public static void ConfigureMonobankClient(this WebApplicationBuilder builder)
+    {
+        builder.Services.AddHttpClient<IMonobankClient, MonobankClient>(client =>
+        {
+            client.BaseAddress = new Uri("https://api.monobank.ua");
+            client.DefaultRequestHeaders.Add("User-Agent", "WalletMate-Client");
         });
     }
 }

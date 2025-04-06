@@ -12,6 +12,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WalletMate.BLL.Shared", "Wa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WalletMate.BLL.Domain", "WalletMate.BLL.Domain\WalletMate.BLL.Domain.csproj", "{D805778C-425B-4CAB-A0A6-35BA31AC6221}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WalletMate.External.Monobank", "WalletMate.External.Monobank\WalletMate.External.Monobank.csproj", "{294E3DC5-C87C-4DC6-9C2D-D5E5F2A07D58}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -42,5 +44,9 @@ Global
 		{D805778C-425B-4CAB-A0A6-35BA31AC6221}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D805778C-425B-4CAB-A0A6-35BA31AC6221}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D805778C-425B-4CAB-A0A6-35BA31AC6221}.Release|Any CPU.Build.0 = Release|Any CPU
+		{294E3DC5-C87C-4DC6-9C2D-D5E5F2A07D58}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{294E3DC5-C87C-4DC6-9C2D-D5E5F2A07D58}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{294E3DC5-C87C-4DC6-9C2D-D5E5F2A07D58}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{294E3DC5-C87C-4DC6-9C2D-D5E5F2A07D58}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
