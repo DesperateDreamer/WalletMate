@@ -125,5 +125,6 @@ public static class ConfigurationExtensions
         });
         
         builder.Services.AddScoped<IHttpRequestBuilderFactory, HttpRequestBuilderFactory>();
+        builder.Services.AddScoped<IMonobankClient, MonobankClient>();
     }
 }

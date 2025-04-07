@@ -21,7 +21,7 @@ public class ExceptionHandlerMiddleware(RequestDelegate next)
             {
                 NotAcceptableException => (int)HttpStatusCode.BadRequest,
                 NotFoundException => (int)HttpStatusCode.NotFound,
-                UnauthorizedAccessException => (int)HttpStatusCode.Forbidden,
+                UnauthorizedAccessException => (int)HttpStatusCode.Unauthorized,
                 _ => (int)HttpStatusCode.InternalServerError
             };
 

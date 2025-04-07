@@ -9,6 +9,7 @@
     <ItemGroup>
       <ProjectReference Include="..\WalletMate.BLL.Shared\WalletMate.BLL.Shared.csproj" />
       <ProjectReference Include="..\WalletMate.DAL.Context\WalletMate.DAL.Context.csproj" />
+      <ProjectReference Include="..\WalletMate.External.Monobank\WalletMate.External.Monobank.csproj" />
     </ItemGroup>
 
 </Project>

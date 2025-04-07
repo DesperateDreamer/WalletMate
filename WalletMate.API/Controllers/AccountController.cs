@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using WalletMate.API.Extensions;
 using WalletMate.BLL.Domain.Abstract;
 using WalletMate.BLL.Domain.DTOs;
 
@@ -44,6 +45,14 @@ public class AccountController(IAccountService accountService) : ControllerBase
     public async Task<IActionResult> DeleteAccount(Guid id, CancellationToken cancellationToken)
     {
         await accountService.DeleteAccountAsync(id, cancellationToken);
+        return Ok();
+    }
+
+    [HttpPost("import/monobank")]
+    public async Task<IActionResult> ImportDataFromMonobank([FromBody] ImportMonobankDto monobankDto, CancellationToken cancellationToken)
+    {
+        var userId = User.GetUserId();
+        await accountService.ImportDataFromMonobank(monobankDto.Token, userId, monobankDto.StartDate, monobankDto.EndDate, cancellationToken);
         return Ok();
     }
 }

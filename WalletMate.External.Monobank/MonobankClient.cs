@@ -16,7 +16,7 @@ public class MonobankClient(IHttpRequestBuilderFactory builderFactory) : IMonoba
         return await response.Content.ReadFromJsonAsync<ClientInfo>();
     }
 
-    public async Task<List<Transaction>?> GetTransactionsAsync(string token, string accountId, string from, string to)
+    public async Task<List<Transaction>?> GetTransactionsAsync(string token, string accountId, long from, long? to)
     {
         var response = await builderFactory.Create(BankProvider.Monobank)
             .AddHeader("X-Token", token)
