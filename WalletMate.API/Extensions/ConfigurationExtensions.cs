@@ -13,6 +13,8 @@ using WalletMate.DAL.Context;
 using WalletMate.DAL.Context.Abstract;
 using WalletMate.DAL.Entities;
 using WalletMate.External.Monobank;
+using WalletMate.External.Shared;
+using WalletMate.External.Shared.Abstract;
 
 namespace WalletMate.API.Extensions;
 
@@ -110,12 +112,18 @@ public static class ConfigurationExtensions
         });
     }
 
-    public static void ConfigureMonobankClient(this WebApplicationBuilder builder)
+    public static void ConfigureBankClients(this WebApplicationBuilder builder)
     {
-        builder.Services.AddHttpClient<IMonobankClient, MonobankClient>(client =>
+        builder.Services.AddHttpClient("Monobank", client =>
         {
             client.BaseAddress = new Uri("https://api.monobank.ua");
-            client.DefaultRequestHeaders.Add("User-Agent", "WalletMate-Client");
         });
+
+        builder.Services.AddHttpClient("FakeBank", client =>
+        {
+            client.BaseAddress = new Uri("https://");
+        });
+        
+        builder.Services.AddScoped<IHttpRequestBuilderFactory, HttpRequestBuilderFactory>();
     }
 }

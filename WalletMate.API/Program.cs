@@ -9,7 +9,7 @@ builder.ConfigureInAppServices();
 builder.ConfigureSwagger();
 builder.ConfigureJwtAuthentication();
 builder.ConfigureAuthorization();
-builder.ConfigureMonobankClient();
+builder.ConfigureBankClients();
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
