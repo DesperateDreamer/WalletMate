@@ -15,6 +15,9 @@ public class AccountConfiguration : IEntityTypeConfiguration<Account>
 
         builder.Property(x => x.Currency)
             .HasConversion<string>();
+        
+        builder.HasIndex(x => x.AccountNumber)
+            .IsUnique();
 
         builder.HasOne(x => x.User)
             .WithMany(u => u.Accounts)

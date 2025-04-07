@@ -101,14 +101,14 @@ public class AccountService(IDataContext dataContext, IMonobankClient monobankCl
         await dataContext.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task ImportDataFromMonobank(string token, Guid userId, DateTime startDate, DateTime? endDate = null, CancellationToken cancellationToken = default)
+    public async Task ImportDataFromMonobank(ImportMonobankDto monobankDto, Guid userId, CancellationToken cancellationToken = default)
     {
-        ValidateDateRange(startDate, endDate);
+        ValidateDateRange(monobankDto.StartDate, monobankDto.EndDate);
 
-        var startDateUnix = DateTimeConverter.ToUnixTimestamp(startDate);
-        long? endDateUnix = endDate.HasValue ? DateTimeConverter.ToUnixTimestamp(endDate.Value) : null;
+        var startDateUnix = DateTimeConverter.ToUnixTimestamp(monobankDto.StartDate);
+        long? endDateUnix = monobankDto.EndDate.HasValue ? DateTimeConverter.ToUnixTimestamp(monobankDto.EndDate.Value) : null;
 
-        var clientInfo = await monobankClient.GetClientInfoAsync(token);
+        var clientInfo = await monobankClient.GetClientInfoAsync(monobankDto.Token);
         if (clientInfo?.Accounts is null || clientInfo.Accounts.Count == 0)
         {
             throw new NotFoundException("No Monobank accounts found.");
@@ -119,14 +119,16 @@ public class AccountService(IDataContext dataContext, IMonobankClient monobankCl
         foreach (var monobankAccount in clientInfo.Accounts)
         {
             var accountTransactions = await monobankClient
-                .GetTransactionsAsync(token, monobankAccount.Id, startDateUnix, endDateUnix);
+                .GetTransactionsAsync(monobankDto.Token, monobankAccount.Id, startDateUnix, endDateUnix);
 
             var mappedTransactions = accountTransactions?
                 .Select(tx => new Transaction
                 {
                     Amount = tx.Amount / 100m,
                     Currency = (Currency)tx.CurrencyCode,
-                    CreatedOn = DateTimeConverter.FromUnixTimestamp(tx.Time)
+                    CreatedOn = DateTimeConverter.FromUnixTimestamp(tx.Time),
+                    Description = tx.Description,
+                    Comment = tx.Comment
                 }).ToList() ?? [];
 
             var internalAccount = new Account

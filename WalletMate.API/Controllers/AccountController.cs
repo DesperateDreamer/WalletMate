@@ -52,7 +52,7 @@ public class AccountController(IAccountService accountService) : ControllerBase
     public async Task<IActionResult> ImportDataFromMonobank([FromBody] ImportMonobankDto monobankDto, CancellationToken cancellationToken)
     {
         var userId = User.GetUserId();
-        await accountService.ImportDataFromMonobank(monobankDto.Token, userId, monobankDto.StartDate, monobankDto.EndDate, cancellationToken);
+        await accountService.ImportDataFromMonobank(monobankDto, userId, cancellationToken);
         return Ok();
     }
 }
