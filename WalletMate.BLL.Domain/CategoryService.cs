@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using WalletMate.BLL.Domain.Abstract;
-using WalletMate.BLL.Domain.DTOs;
 using WalletMate.BLL.Shared.CustomExceptions;
+using WalletMate.BLL.Shared.DTOs;
 using WalletMate.DAL.Context.Abstract;
 using WalletMate.DAL.Entities;
 

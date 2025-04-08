@@ -1,13 +1,15 @@
 using Microsoft.EntityFrameworkCore;
 using WalletMate.BLL.Domain.Abstract;
-using WalletMate.BLL.Domain.DTOs;
+using WalletMate.BLL.Shared;
 using WalletMate.BLL.Shared.CustomExceptions;
+using WalletMate.BLL.Shared.DTOs;
+using WalletMate.BLL.Shared.Enums;
 using WalletMate.DAL.Context.Abstract;
 using WalletMate.DAL.Entities;
 
 namespace WalletMate.BLL.Domain;
 
-public class TransactionService(IDataContext dataContext) : ITransactionService
+public class TransactionService(IDataContext dataContext, TransactionSortingStrategyResolver sortResolver) : ITransactionService
 {
     public async Task<TransactionDto?> GetTransactionByIdAsync(Guid transactionId,
         CancellationToken cancellationToken = default)
@@ -26,6 +28,8 @@ public class TransactionService(IDataContext dataContext) : ITransactionService
             Id = transaction.Id,
             Amount = transaction.Amount,
             Currency = transaction.Currency,
+            Comment = transaction.Comment,
+            Description = transaction.Description,
             CreatedOn = transaction.CreatedOn,
             AccountId = transaction.AccountId,
             CategoryIds = transaction.TransactionCategories
@@ -45,6 +49,8 @@ public class TransactionService(IDataContext dataContext) : ITransactionService
         {
             Id = t.Id,
             Amount = t.Amount,
+            Description = t.Description,
+            Comment = t.Comment,
             Currency = t.Currency,
             CreatedOn = t.CreatedOn,
             AccountId = t.AccountId,
@@ -139,17 +145,19 @@ public class TransactionService(IDataContext dataContext) : ITransactionService
     }
 
     public async Task<IEnumerable<TransactionDto>> GetTransactionsByAccountAsync(
-        Guid accountId, CancellationToken cancellationToken = default)
+        Guid accountId, TransactionSortOption sortBy = TransactionSortOption.Date, CancellationToken cancellationToken = default)
     {
         var transactions = await dataContext.Transaction
             .Where(t => t.AccountId == accountId)
             .Include(t => t.TransactionCategories)
             .ToListAsync(cancellationToken);
 
-        return transactions.Select(t => new TransactionDto
+        var transactionDtos = transactions.Select(t => new TransactionDto
         {
             Id = t.Id,
             Amount = t.Amount,
+            Description = t.Description,
+            Comment = t.Comment,
             Currency = t.Currency,
             CreatedOn = t.CreatedOn,
             AccountId = t.AccountId,
@@ -157,5 +165,8 @@ public class TransactionService(IDataContext dataContext) : ITransactionService
                 .Select(tc => tc.Id)
                 .ToList()
         });
+        
+        var strategy = sortResolver.Resolve(sortBy);
+        return strategy.Sort(transactionDtos);
     }
 }

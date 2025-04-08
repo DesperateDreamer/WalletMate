@@ -1,4 +1,4 @@
-namespace WalletMate.BLL.Domain.DTOs;
+namespace WalletMate.BLL.Shared.DTOs;
 
 public class LoginDto
 {

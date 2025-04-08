@@ -1,4 +1,4 @@
-using WalletMate.BLL.Domain.DTOs;
+using WalletMate.BLL.Shared.DTOs;
 using WalletMate.DAL.Entities;
 
 namespace WalletMate.BLL.Domain.Abstract;

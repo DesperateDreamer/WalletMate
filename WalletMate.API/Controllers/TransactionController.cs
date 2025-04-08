@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WalletMate.BLL.Domain.Abstract;
-using WalletMate.BLL.Domain.DTOs;
+using WalletMate.BLL.Shared.DTOs;
+using WalletMate.BLL.Shared.Enums;
 
 namespace WalletMate.API.Controllers;
 
@@ -25,10 +26,10 @@ public class TransactionController(ITransactionService transactionService) : Con
     }
 
     [HttpGet("account/{accountId:guid}")]
-    public async Task<ActionResult<IEnumerable<TransactionDto>>> GetTransactionsByAccount(Guid accountId,
+    public async Task<ActionResult<IEnumerable<TransactionDto>>> GetTransactionsByAccount(Guid accountId, [FromQuery] TransactionSortOption sortBy,
         CancellationToken cancellationToken)
     {
-        var transactions = await transactionService.GetTransactionsByAccountAsync(accountId, cancellationToken);
+        var transactions = await transactionService.GetTransactionsByAccountAsync(accountId, sortBy, cancellationToken);
         return Ok(transactions);
     }
 

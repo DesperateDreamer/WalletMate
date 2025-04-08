@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WalletMate.BLL.Domain.Abstract;
-using WalletMate.BLL.Domain.DTOs;
+using WalletMate.BLL.Shared.DTOs;
 
 namespace WalletMate.API.Controllers;
 

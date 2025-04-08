@@ -9,6 +9,7 @@ using WalletMate.BLL.Domain;
 using WalletMate.BLL.Domain.Abstract;
 using WalletMate.BLL.Shared;
 using WalletMate.BLL.Shared.Abstract;
+using WalletMate.BLL.Shared.SortStrategies;
 using WalletMate.DAL.Context;
 using WalletMate.DAL.Context.Abstract;
 using WalletMate.DAL.Entities;
@@ -30,6 +31,10 @@ public static class ConfigurationExtensions
         builder.Services.AddScoped<ITransactionService, TransactionService>();
         builder.Services.AddScoped<ITokenService, TokenService>();
         builder.Services.AddScoped<IAuthService, AuthService>();
+        builder.Services.AddScoped<SortByDateStrategy>();
+        builder.Services.AddScoped<SortByAmountStrategy>();
+        builder.Services.AddScoped<SortByCurrencyStrategy>();
+        builder.Services.AddScoped<TransactionSortingStrategyResolver>();
     }
 
     public static void ConfigureSwagger(this WebApplicationBuilder builder)
@@ -37,6 +42,7 @@ public static class ConfigurationExtensions
         builder.Services.AddSwaggerGen(options =>
         {
             options.CustomOperationIds(e => $"{e.ActionDescriptor.RouteValues["action"]}");
+            options.UseInlineDefinitionsForEnums();
             options.SwaggerDoc("v1", new OpenApiInfo
             {
                 Title = "WalletMate API",
