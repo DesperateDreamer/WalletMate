@@ -11,7 +11,7 @@ namespace WalletMate.BLL.Domain;
 
 public class TransactionService(IDataContext dataContext, TransactionSortingStrategyResolver sortResolver) : ITransactionService
 {
-    public async Task<TransactionDto?> GetTransactionByIdAsync(Guid transactionId,
+    public async Task<TransactionDto> GetTransactionByIdAsync(Guid transactionId,
         CancellationToken cancellationToken = default)
     {
         var transaction = await dataContext.Transaction

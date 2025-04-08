@@ -50,8 +50,17 @@ public class AccountService(IDataContext dataContext, IMonobankClient monobankCl
 
     public async Task<Guid> CreateAccountAsync(CreateAccountDto dto, CancellationToken cancellationToken = default)
     {
+        var existingAccount = await dataContext.Account
+            .FirstOrDefaultAsync(a => a.AccountNumber == dto.AccountNumber, cancellationToken);
+        
+        if (existingAccount is not null)
+        {
+            throw new NotAcceptableException("Account already exists.");
+        }
+        
         var newAccount = new Account
         {
+            AccountNumber = dto.AccountNumber,
             Name = dto.Name,
             Description = dto.Description,
             Balance = dto.Balance,

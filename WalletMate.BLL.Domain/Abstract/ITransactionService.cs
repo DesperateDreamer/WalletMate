@@ -5,7 +5,7 @@ namespace WalletMate.BLL.Domain.Abstract;
 
 public interface ITransactionService
 {
-    Task<TransactionDto?> GetTransactionByIdAsync(Guid transactionId, CancellationToken cancellationToken = default);
+    Task<TransactionDto> GetTransactionByIdAsync(Guid transactionId, CancellationToken cancellationToken = default);
     Task<IEnumerable<TransactionDto>> GetAllTransactionsAsync(CancellationToken cancellationToken = default);
         
     Task<Guid> CreateTransactionAsync(CreateTransactionDto dto, CancellationToken cancellationToken = default);

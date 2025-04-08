@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WalletMate.BLL.Domain.Abstract;
 using WalletMate.BLL.Shared.DTOs;
+using WalletMate.DAL.Entities;
 
 namespace WalletMate.API.Controllers;
 
@@ -43,11 +44,6 @@ public class UserController(IUserService userService) : ControllerBase
     public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDto dto, CancellationToken cancellationToken)
     {
         var result = await userService.ChangePasswordAsync(dto.UserId, dto.CurrentPassword, dto.NewPassword, cancellationToken);
-        if (!result)
-        {
-            return BadRequest("Failed to change password. Check user ID and current password.");
-        }
-
-        return Ok("Password changed successfully.");
+        return Ok(result);
     }
 }

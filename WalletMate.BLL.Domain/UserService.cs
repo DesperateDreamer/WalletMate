@@ -10,14 +10,40 @@ namespace WalletMate.BLL.Domain;
 
 public class UserService(IDataContext dataContext, IPasswordService passwordService) : IUserService
 {
-    public async Task<User?> GetUserByIdAsync(Guid userId, CancellationToken cancellationToken = default)
+    public async Task<UserDto> GetUserByIdAsync(Guid userId, CancellationToken cancellationToken = default)
     {
-        return await dataContext.User.FirstOrDefaultAsync(u => u.Id == userId, cancellationToken);
+        var user = await dataContext.User.FirstOrDefaultAsync(u => u.Id == userId, cancellationToken);
+        if (user is null)
+        {
+            throw new NotFoundException("User not found.");
+        }
+        
+        return new UserDto
+        {
+            Id = user.Id,
+            FirstName = user.FirstName,
+            LastName = user.LastName,
+            MiddleName = user.MiddleName,
+            Email = user.Email,
+            UserName = user.UserName,
+            BillingAddress = user.BillingAddress
+        };
     }
 
-    public async Task<IEnumerable<User>> GetAllUsersAsync(CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<UserDto>> GetAllUsersAsync(CancellationToken cancellationToken = default)
     {
-        return await dataContext.User.ToListAsync(cancellationToken);
+        var users = await dataContext.User.ToListAsync(cancellationToken);
+        
+        return users.Select(u => new UserDto
+        {
+            Id = u.Id,
+            FirstName = u.FirstName,
+            LastName = u.LastName,
+            MiddleName = u.MiddleName,
+            Email = u.Email,
+            UserName = u.UserName,
+            BillingAddress = u.BillingAddress
+        });
     }
 
     public async Task<Guid> CreateUserAsync(CreateUserDto userDto, CancellationToken cancellationToken = default)
@@ -28,9 +54,7 @@ public class UserService(IDataContext dataContext, IPasswordService passwordServ
 
         if (existingUser is not null)
         {
-            throw
-                new NotAcceptableException(
-                    "User already exists"); //TODO: middle point for catching exceptions + logging
+            throw new NotAcceptableException("User already exists");
         }
 
         var user = new User
@@ -84,12 +108,12 @@ public class UserService(IDataContext dataContext, IPasswordService passwordServ
         var user = await dataContext.User.FirstOrDefaultAsync(u => u.Id == userId, cancellationToken);
         if (user is null)
         {
-            return false;
+            throw new NotFoundException("User not found.");
         }
 
         if (!passwordService.VerifyPassword(user, user.PasswordHash, currentPassword))
         {
-            return false;
+            throw new NotAcceptableException("Invalid password");
         }
 
         user.PasswordHash = passwordService.HashPassword(user, newPassword);
