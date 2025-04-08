@@ -9,8 +9,12 @@ using WalletMate.DAL.Entities;
 
 namespace WalletMate.BLL.Domain;
 
-public class TransactionService(IDataContext dataContext, TransactionSortingStrategyResolver sortResolver) : ITransactionService
+public class TransactionService(IDataContext dataContext, TransactionSortingStrategyResolver sortResolver)
+    : ITransactionService
 {
+    private readonly CacheManager<IEnumerable<TransactionDto>> _transactionCache =
+        CacheManager<IEnumerable<TransactionDto>>.Instance;
+
     public async Task<TransactionDto> GetTransactionByIdAsync(Guid transactionId,
         CancellationToken cancellationToken = default)
     {
@@ -32,9 +36,7 @@ public class TransactionService(IDataContext dataContext, TransactionSortingStra
             Description = transaction.Description,
             CreatedOn = transaction.CreatedOn,
             AccountId = transaction.AccountId,
-            CategoryIds = transaction.TransactionCategories
-                .Select(tc => tc.Id)
-                .ToList()
+            CategoryIds = transaction.TransactionCategories.Select(tc => tc.Id).ToList()
         };
     }
 
@@ -44,7 +46,7 @@ public class TransactionService(IDataContext dataContext, TransactionSortingStra
         var transactions = await dataContext.Transaction
             .Include(t => t.TransactionCategories)
             .ToListAsync(cancellationToken);
-        
+
         return transactions.Select(t => new TransactionDto
         {
             Id = t.Id,
@@ -54,9 +56,7 @@ public class TransactionService(IDataContext dataContext, TransactionSortingStra
             Currency = t.Currency,
             CreatedOn = t.CreatedOn,
             AccountId = t.AccountId,
-            CategoryIds = t.TransactionCategories
-                .Select(tc => tc.Id)
-                .ToList()
+            CategoryIds = t.TransactionCategories.Select(tc => tc.Id).ToList()
         });
     }
 
@@ -65,11 +65,9 @@ public class TransactionService(IDataContext dataContext, TransactionSortingStra
     {
         var account = await dataContext.Account
             .FirstOrDefaultAsync(a => a.Id == dto.AccountId, cancellationToken);
-        
+
         if (account is null)
-        {
             throw new NotFoundException("Account not found.");
-        }
 
         var transaction = new Transaction
         {
@@ -78,7 +76,7 @@ public class TransactionService(IDataContext dataContext, TransactionSortingStra
             AccountId = dto.AccountId,
             CreatedOn = DateTime.UtcNow
         };
-        
+
         if (dto.CategoryIds is { Count: > 0 })
         {
             var categories = await dataContext.TransactionCategory
@@ -94,6 +92,9 @@ public class TransactionService(IDataContext dataContext, TransactionSortingStra
         await dataContext.Transaction.AddAsync(transaction, cancellationToken);
         await dataContext.SaveChangesAsync(cancellationToken);
 
+        // Invalidate cache for this account
+        _transactionCache.Remove(dto.AccountId);
+
         return transaction.Id;
     }
 
@@ -106,10 +107,10 @@ public class TransactionService(IDataContext dataContext, TransactionSortingStra
 
         if (transaction is null)
             throw new NotFoundException("Transaction not found.");
-        
+
         transaction.Amount = dto.Amount;
         transaction.Currency = dto.Currency;
-        
+
         if (dto.CategoryIds is not null)
         {
             transaction.TransactionCategories.Clear();
@@ -127,6 +128,9 @@ public class TransactionService(IDataContext dataContext, TransactionSortingStra
         dataContext.Transaction.Update(transaction);
         await dataContext.SaveChangesAsync(cancellationToken);
 
+        // Invalidate cache for this account
+        _transactionCache.Remove(transaction.AccountId);
+
         return transaction.Id;
     }
 
@@ -136,37 +140,41 @@ public class TransactionService(IDataContext dataContext, TransactionSortingStra
             .FirstOrDefaultAsync(t => t.Id == transactionId, cancellationToken);
 
         if (transaction is null)
-        {
             throw new NotFoundException("Transaction not found.");
-        }
 
         dataContext.Transaction.Remove(transaction);
         await dataContext.SaveChangesAsync(cancellationToken);
+
+        // Invalidate cache
+        _transactionCache.Remove(transaction.AccountId);
     }
 
     public async Task<IEnumerable<TransactionDto>> GetTransactionsByAccountAsync(
-        Guid accountId, TransactionSortOption sortBy = TransactionSortOption.Date, CancellationToken cancellationToken = default)
+        Guid accountId,
+        TransactionSortOption sortBy = TransactionSortOption.Date,
+        CancellationToken cancellationToken = default)
     {
-        var transactions = await dataContext.Transaction
-            .Where(t => t.AccountId == accountId)
-            .Include(t => t.TransactionCategories)
-            .ToListAsync(cancellationToken);
-
-        var transactionDtos = transactions.Select(t => new TransactionDto
+        var transactions = _transactionCache.GetOrAdd(accountId, () =>
         {
-            Id = t.Id,
-            Amount = t.Amount,
-            Description = t.Description,
-            Comment = t.Comment,
-            Currency = t.Currency,
-            CreatedOn = t.CreatedOn,
-            AccountId = t.AccountId,
-            CategoryIds = t.TransactionCategories
-                .Select(tc => tc.Id)
-                .ToList()
-        });
-        
+            var data = dataContext.Transaction
+                .Where(t => t.AccountId == accountId)
+                .Include(t => t.TransactionCategories)
+                .ToList();
+
+            return data.Select(t => new TransactionDto
+            {
+                Id = t.Id,
+                Amount = t.Amount,
+                Description = t.Description,
+                Comment = t.Comment,
+                Currency = t.Currency,
+                CreatedOn = t.CreatedOn,
+                AccountId = t.AccountId,
+                CategoryIds = t.TransactionCategories.Select(tc => tc.Id).ToList()
+            }).ToList();
+        }, TimeSpan.FromMinutes(5)); // TTL: 5 minutes
+
         var strategy = sortResolver.Resolve(sortBy);
-        return strategy.Sort(transactionDtos);
+        return strategy.Sort(transactions);
     }
 }

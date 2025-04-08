@@ -4,30 +4,49 @@ namespace WalletMate.BLL.Shared;
 
 public sealed class CacheManager<TValue>
 {
-    private CacheManager()
-    {
-    }
-    
+    private CacheManager() { }
+
     private static readonly Lazy<CacheManager<TValue>> _instance =
         new(() => new CacheManager<TValue>());
-    
+
     public static CacheManager<TValue> Instance => _instance.Value;
-    
-    private readonly ConcurrentDictionary<Guid, TValue?> _cache = new();
-    
-    public TValue? GetOrAdd(Guid key, Func<TValue> factory)
+
+    private readonly ConcurrentDictionary<Guid, CacheEntry<TValue>> _cache = new();
+
+    public TValue? GetOrAdd(Guid key, Func<TValue> factory, TimeSpan? ttl = null)
     {
-        return _cache.GetOrAdd(key, _ => factory());
+        if (TryGetValidEntry(key, out var value))
+            return value;
+
+        var created = factory();
+        Set(key, created, ttl);
+        return created;
+    }
+
+    public async Task<TValue?> GetOrAddAsync(Guid key, Func<Task<TValue>> factory, TimeSpan? ttl = null)
+    {
+        if (TryGetValidEntry(key, out var value))
+            return value;
+
+        var created = await factory();
+        Set(key, created, ttl);
+        return created;
     }
 
     public bool TryGetValue(Guid key, out TValue? value)
     {
-        return _cache.TryGetValue(key, out value);
+        return TryGetValidEntry(key, out value);
     }
 
-    public void Set(Guid key, TValue? value)
+    public bool ContainsKey(Guid key)
     {
-        _cache[key] = value;
+        return TryGetValidEntry(key, out _);
+    }
+
+    public void Set(Guid key, TValue? value, TimeSpan? ttl = null)
+    {
+        var expiresAt = ttl.HasValue ? DateTime.UtcNow.Add(ttl.Value) : (DateTime?)null;
+        _cache[key] = new CacheEntry<TValue>(value, expiresAt);
     }
 
     public bool Remove(Guid key)
@@ -37,16 +56,39 @@ public sealed class CacheManager<TValue>
 
     public IEnumerable<KeyValuePair<Guid, TValue?>> GetAll()
     {
-        return _cache.ToArray();
+        var now = DateTime.UtcNow;
+
+        foreach (var kvp in _cache)
+        {
+            if (kvp.Value.ExpiresAt == null || now < kvp.Value.ExpiresAt)
+                yield return new KeyValuePair<Guid, TValue?>(kvp.Key, kvp.Value.Value);
+        }
     }
 
-    public bool ContainsKey(Guid key)
-    {
-        return _cache.ContainsKey(key);
-    }
-    
     public void Clear()
     {
         _cache.Clear();
     }
+    
+    private bool TryGetValidEntry(Guid key, out TValue? value)
+    {
+        var now = DateTime.UtcNow;
+
+        if (_cache.TryGetValue(key, out var entry))
+        {
+            if (entry.ExpiresAt == null || now < entry.ExpiresAt)
+            {
+                value = entry.Value;
+                return true;
+            }
+
+            // expired
+            _cache.TryRemove(key, out _);
+        }
+
+        value = default;
+        return false;
+    }
+    
+    private record CacheEntry<T>(T? Value, DateTime? ExpiresAt);
 }
