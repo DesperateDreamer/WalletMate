@@ -1,3 +1,4 @@
+using System.Reflection;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -41,6 +42,10 @@ public static class ConfigurationExtensions
     {
         builder.Services.AddSwaggerGen(options =>
         {
+            var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+            var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+            options.IncludeXmlComments(xmlPath);
+            
             options.CustomOperationIds(e => $"{e.ActionDescriptor.RouteValues["action"]}");
             options.UseInlineDefinitionsForEnums();
             options.SwaggerDoc("v1", new OpenApiInfo
