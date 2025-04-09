@@ -52,12 +52,12 @@ public class AccountService(IDataContext dataContext, IMonobankClient monobankCl
     {
         var existingAccount = await dataContext.Account
             .FirstOrDefaultAsync(a => a.AccountNumber == dto.AccountNumber, cancellationToken);
-        
+
         if (existingAccount is not null)
         {
             throw new NotAcceptableException("Account already exists.");
         }
-        
+
         var newAccount = new Account
         {
             AccountNumber = dto.AccountNumber,
@@ -84,7 +84,7 @@ public class AccountService(IDataContext dataContext, IMonobankClient monobankCl
         {
             throw new NotFoundException("Account not found.");
         }
-        
+
         account.Name = dto.Name;
         account.Description = dto.Description;
         account.Balance = dto.Balance;
@@ -110,12 +110,15 @@ public class AccountService(IDataContext dataContext, IMonobankClient monobankCl
         await dataContext.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task ImportDataFromMonobank(ImportMonobankDto monobankDto, Guid userId, CancellationToken cancellationToken = default)
+    public async Task ImportDataFromMonobank(ImportMonobankDto monobankDto, Guid userId,
+        CancellationToken cancellationToken = default)
     {
         ValidateDateRange(monobankDto.StartDate, monobankDto.EndDate);
 
         var startDateUnix = DateTimeConverter.ToUnixTimestamp(monobankDto.StartDate);
-        long? endDateUnix = monobankDto.EndDate.HasValue ? DateTimeConverter.ToUnixTimestamp(monobankDto.EndDate.Value) : null;
+        long? endDateUnix = monobankDto.EndDate.HasValue
+            ? DateTimeConverter.ToUnixTimestamp(monobankDto.EndDate.Value)
+            : null;
 
         var clientInfo = await monobankClient.GetClientInfoAsync(monobankDto.Token);
         if (clientInfo?.Accounts is null || clientInfo.Accounts.Count == 0)
@@ -127,6 +130,14 @@ public class AccountService(IDataContext dataContext, IMonobankClient monobankCl
 
         foreach (var monobankAccount in clientInfo.Accounts)
         {
+            var existingAccount = await dataContext.Account
+                .FirstOrDefaultAsync(a => a.AccountNumber == monobankAccount.Iban, cancellationToken);
+
+            if (existingAccount != null)
+            {
+                continue;
+            }
+
             var accountTransactions = await monobankClient
                 .GetTransactionsAsync(monobankDto.Token, monobankAccount.Id, startDateUnix, endDateUnix);
 
@@ -155,7 +166,7 @@ public class AccountService(IDataContext dataContext, IMonobankClient monobankCl
         await dataContext.Account.AddRangeAsync(newAccounts, cancellationToken);
         await dataContext.SaveChangesAsync(cancellationToken);
     }
-    
+
     private static void ValidateDateRange(DateTime startDate, DateTime? endDate)
     {
         var now = DateTime.UtcNow;
