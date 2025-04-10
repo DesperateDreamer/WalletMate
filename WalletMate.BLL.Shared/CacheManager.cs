@@ -2,17 +2,34 @@ using System.Collections.Concurrent;
 
 namespace WalletMate.BLL.Shared;
 
+/// <summary>
+/// A thread-safe, generic cache manager that supports expiration of cached items.
+/// </summary>
+/// <typeparam name="TValue">The type of the values to be stored in the cache.</typeparam>
 public sealed class CacheManager<TValue>
 {
+    /// <summary>
+    /// Private constructor to enforce singleton pattern.
+    /// </summary>
     private CacheManager() { }
-
+    
     private static readonly Lazy<CacheManager<TValue>> _instance =
         new(() => new CacheManager<TValue>());
 
+    /// <summary>
+    /// The singleton instance of the cache manager.
+    /// </summary>
     public static CacheManager<TValue> Instance => _instance.Value;
 
     private readonly ConcurrentDictionary<Guid, CacheEntry<TValue>> _cache = new();
-
+    
+    /// <summary>
+    /// Retrieves a value from the cache or adds it if it does not exist.
+    /// </summary>
+    /// <param name="key">The unique identifier for the cache entry.</param>
+    /// <param name="factory">A factory function to create the value if it does not exist in the cache.</param>
+    /// <param name="ttl">The time-to-live for the cache entry. If null, the entry does not expire.</param>
+    /// <returns>The cached or newly created value.</returns>
     public TValue? GetOrAdd(Guid key, Func<TValue> factory, TimeSpan? ttl = null)
     {
         if (TryGetValidEntry(key, out var value))
@@ -23,6 +40,13 @@ public sealed class CacheManager<TValue>
         return created;
     }
 
+    /// <summary>
+    /// Asynchronously retrieves a value from the cache or adds it if it does not exist.
+    /// </summary>
+    /// <param name="key">The unique identifier for the cache entry.</param>
+    /// <param name="factory">An asynchronous factory function to create the value if it does not exist in the cache.</param>
+    /// <param name="ttl">The time-to-live for the cache entry. If null, the entry does not expire.</param>
+    /// <returns>A task representing the cached or newly created value.</returns>
     public async Task<TValue?> GetOrAddAsync(Guid key, Func<Task<TValue>> factory, TimeSpan? ttl = null)
     {
         if (TryGetValidEntry(key, out var value))
@@ -33,27 +57,32 @@ public sealed class CacheManager<TValue>
         return created;
     }
 
-    public bool TryGetValue(Guid key, out TValue? value)
-    {
-        return TryGetValidEntry(key, out value);
-    }
-
-    public bool ContainsKey(Guid key)
-    {
-        return TryGetValidEntry(key, out _);
-    }
-
-    public void Set(Guid key, TValue? value, TimeSpan? ttl = null)
+    /// <summary>
+    /// Adds or updates a value in the cache with an optional expiration time.
+    /// </summary>
+    /// <param name="key">The unique identifier for the cache entry.</param>
+    /// <param name="value">The value to store in the cache.</param>
+    /// <param name="ttl">The time-to-live for the cache entry. If null, the entry does not expire.</param>
+    private void Set(Guid key, TValue? value, TimeSpan? ttl = null)
     {
         var expiresAt = ttl.HasValue ? DateTime.UtcNow.Add(ttl.Value) : (DateTime?)null;
         _cache[key] = new CacheEntry<TValue>(value, expiresAt);
     }
-
+    
+    /// <summary>
+    /// Removes a cache entry by its key.
+    /// </summary>
+    /// <param name="key">The unique identifier for the cache entry.</param>
+    /// <returns>True if the entry was removed; otherwise, false.</returns>
     public bool Remove(Guid key)
     {
         return _cache.TryRemove(key, out _);
     }
 
+    /// <summary>
+    /// Retrieves all valid cache entries.
+    /// </summary>
+    /// <returns>An enumerable of key-value pairs representing valid cache entries.</returns>
     public IEnumerable<KeyValuePair<Guid, TValue?>> GetAll()
     {
         var now = DateTime.UtcNow;
@@ -70,6 +99,12 @@ public sealed class CacheManager<TValue>
         _cache.Clear();
     }
     
+    /// <summary>
+    /// Attempts to retrieve a valid cache entry by its key.
+    /// </summary>
+    /// <param name="key">The unique identifier for the cache entry.</param>
+    /// <param name="value">The retrieved value if found and valid; otherwise, null.</param>
+    /// <returns>True if the value was found and valid; otherwise, false.</returns>
     private bool TryGetValidEntry(Guid key, out TValue? value)
     {
         var now = DateTime.UtcNow;
@@ -90,5 +125,9 @@ public sealed class CacheManager<TValue>
         return false;
     }
     
+    /// <summary>
+    /// Represents a cache entry with an optional expiration time.
+    /// </summary>
+    /// <typeparam name="T">The type of the value stored in the cache entry.</typeparam>
     private record CacheEntry<T>(T? Value, DateTime? ExpiresAt);
 }
