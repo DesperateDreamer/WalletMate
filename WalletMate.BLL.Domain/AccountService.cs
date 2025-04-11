@@ -110,6 +110,7 @@ public class AccountService(IDataContext dataContext, IMonobankClient monobankCl
         await dataContext.SaveChangesAsync(cancellationToken);
     }
 
+    // Facade pattern
     public async Task ImportDataFromMonobank(ImportMonobankDto monobankDto, Guid userId,
         CancellationToken cancellationToken = default)
     {

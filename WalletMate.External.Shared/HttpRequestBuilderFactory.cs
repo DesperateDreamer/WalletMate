@@ -3,6 +3,7 @@ using WalletMate.External.Shared.Enums;
 
 namespace WalletMate.External.Shared;
 
+// Abstract Factory pattern
 public class HttpRequestBuilderFactory(IHttpClientFactory clientFactory) : IHttpRequestBuilderFactory
 {
     public IHttpRequestBuilder Create(BankProvider provider)

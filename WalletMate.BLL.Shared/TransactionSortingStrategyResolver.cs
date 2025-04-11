@@ -5,6 +5,7 @@ using WalletMate.BLL.Shared.SortStrategies;
 
 namespace WalletMate.BLL.Shared;
 
+// Strategy pattern
 public class TransactionSortingStrategyResolver(IServiceProvider provider)
 {
     public ITransactionSortingStrategy Resolve(TransactionSortOption option) => option switch

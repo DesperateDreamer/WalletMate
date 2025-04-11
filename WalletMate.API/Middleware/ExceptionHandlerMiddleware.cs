@@ -4,6 +4,7 @@ using WalletMate.BLL.Shared.CustomExceptions;
 
 namespace WalletMate.API.Middleware;
 
+// Chain of Responsibility pattern
 public class ExceptionHandlerMiddleware(RequestDelegate next)
 {
     public async Task Invoke(HttpContext context)

@@ -2,6 +2,7 @@ using WalletMate.External.Shared.Abstract;
 
 namespace WalletMate.External.Shared;
 
+// Builder pattern
 public class HttpRequestBuilder(HttpClient client) : IHttpRequestBuilder
 {
     private readonly HttpRequestMessage _request = new();

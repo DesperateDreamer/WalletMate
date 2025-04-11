@@ -154,12 +154,12 @@ public class TransactionService(IDataContext dataContext, TransactionSortingStra
         TransactionSortOption sortBy = TransactionSortOption.Date,
         CancellationToken cancellationToken = default)
     {
-        var transactions = _transactionCache.GetOrAdd(accountId, () =>
+        var transactions = await _transactionCache.GetOrAddAsync(accountId, async () =>
         {
-            var data = dataContext.Transaction
+            var data = await dataContext.Transaction
                 .Where(t => t.AccountId == accountId)
                 .Include(t => t.TransactionCategories)
-                .ToList();
+                .ToListAsync(cancellationToken: cancellationToken);
 
             return data.Select(t => new TransactionDto
             {
@@ -173,6 +173,11 @@ public class TransactionService(IDataContext dataContext, TransactionSortingStra
                 CategoryIds = t.TransactionCategories.Select(tc => tc.Id).ToList()
             }).ToList();
         }, TimeSpan.FromMinutes(5)); // TTL: 5 minutes
+
+        if (transactions is null)
+        {
+            throw new NotFoundException("Transactions not found.");
+        }
 
         var strategy = sortResolver.Resolve(sortBy);
         return strategy.Sort(transactions);

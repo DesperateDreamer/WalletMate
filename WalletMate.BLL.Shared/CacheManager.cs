@@ -3,7 +3,7 @@ using System.Collections.Concurrent;
 namespace WalletMate.BLL.Shared;
 
 /// <summary>
-/// A thread-safe, generic cache manager that supports expiration of cached items.
+/// A thread-safe, generic cache manager that supports expiration of cached items. THREAD-SAFE SINGLETON PATTERN
 /// </summary>
 /// <typeparam name="TValue">The type of the values to be stored in the cache.</typeparam>
 public sealed class CacheManager<TValue>

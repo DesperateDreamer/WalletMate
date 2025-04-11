@@ -5,6 +5,7 @@ using WalletMate.External.Shared.Enums;
 
 namespace WalletMate.External.Monobank;
 
+// Adapter pattern
 public class MonobankClient(IHttpRequestBuilderFactory builderFactory) : IMonobankClient
 {
     public async Task<ClientInfo?> GetClientInfoAsync(string token)
