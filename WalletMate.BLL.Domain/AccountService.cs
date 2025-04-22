@@ -128,6 +128,7 @@ public class AccountService(IDataContext dataContext, IMonobankClient monobankCl
         }
 
         var newAccounts = new List<Account>();
+        var cache = CacheManager<List<WalletMate.External.Monobank.Models.Transaction>>.Instance;
 
         foreach (var monobankAccount in clientInfo.Accounts)
         {
@@ -138,9 +139,18 @@ public class AccountService(IDataContext dataContext, IMonobankClient monobankCl
             {
                 continue;
             }
-
-            var accountTransactions = await monobankClient
-                .GetTransactionsAsync(monobankDto.Token, monobankAccount.Id, startDateUnix, endDateUnix);
+            
+            var cacheKey = monobankAccount.Id;
+            var accountTransactions = await cache.GetOrAddAsync(
+                cacheKey,
+                async () => await monobankClient.GetTransactionsAsync(
+                    monobankDto.Token,
+                    monobankAccount.Id,
+                    startDateUnix,
+                    endDateUnix
+                ) ?? [],
+                ttl: TimeSpan.FromMinutes(60)
+            );
 
             var mappedTransactions = accountTransactions?
                 .Select(tx => new Transaction

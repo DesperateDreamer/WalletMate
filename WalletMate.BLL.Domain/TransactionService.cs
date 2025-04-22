@@ -93,7 +93,7 @@ public class TransactionService(IDataContext dataContext, TransactionSortingStra
         await dataContext.SaveChangesAsync(cancellationToken);
 
         // Invalidate cache for this account
-        _transactionCache.Remove(dto.AccountId);
+        _transactionCache.Remove(dto.AccountId.ToString());
 
         return transaction.Id;
     }
@@ -129,7 +129,7 @@ public class TransactionService(IDataContext dataContext, TransactionSortingStra
         await dataContext.SaveChangesAsync(cancellationToken);
 
         // Invalidate cache for this account
-        _transactionCache.Remove(transaction.AccountId);
+        _transactionCache.Remove(transaction.AccountId.ToString());
 
         return transaction.Id;
     }
@@ -146,7 +146,7 @@ public class TransactionService(IDataContext dataContext, TransactionSortingStra
         await dataContext.SaveChangesAsync(cancellationToken);
 
         // Invalidate cache
-        _transactionCache.Remove(transaction.AccountId);
+        _transactionCache.Remove(transaction.AccountId.ToString());
     }
 
     public async Task<IEnumerable<TransactionDto>> GetTransactionsByAccountAsync(
@@ -154,7 +154,7 @@ public class TransactionService(IDataContext dataContext, TransactionSortingStra
         TransactionSortOption sortBy = TransactionSortOption.Date,
         CancellationToken cancellationToken = default)
     {
-        var transactions = await _transactionCache.GetOrAddAsync(accountId, async () =>
+        var transactions = await _transactionCache.GetOrAddAsync(accountId.ToString(), async () =>
         {
             var data = await dataContext.Transaction
                 .Where(t => t.AccountId == accountId)
