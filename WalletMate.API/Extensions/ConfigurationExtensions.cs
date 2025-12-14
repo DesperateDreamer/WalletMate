@@ -32,9 +32,9 @@ public static class ConfigurationExtensions
         builder.Services.AddScoped<ITransactionService, TransactionService>();
         builder.Services.AddScoped<ITokenService, TokenService>();
         builder.Services.AddScoped<IAuthService, AuthService>();
-        builder.Services.AddScoped<SortByDateStrategy>();
-        builder.Services.AddScoped<SortByAmountStrategy>();
-        builder.Services.AddScoped<SortByCurrencyStrategy>();
+        builder.Services.AddScoped<ITransactionSortingStrategy, SortByDateStrategy>();
+        builder.Services.AddScoped<ITransactionSortingStrategy, SortByAmountStrategy>();
+        builder.Services.AddScoped<ITransactionSortingStrategy, SortByCurrencyStrategy>();
         builder.Services.AddScoped<TransactionSortingStrategyResolver>();
     }
 
