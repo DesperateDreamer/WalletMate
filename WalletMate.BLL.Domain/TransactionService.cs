@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using WalletMate.BLL.Domain.Abstract;
 using WalletMate.BLL.Shared;
+using WalletMate.BLL.Shared.Abstract;
 using WalletMate.BLL.Shared.CustomExceptions;
 using WalletMate.BLL.Shared.DTOs;
 using WalletMate.BLL.Shared.Enums;
