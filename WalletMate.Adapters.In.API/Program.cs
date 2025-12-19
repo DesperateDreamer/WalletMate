@@ -28,6 +28,7 @@ builder.Services
     .ConfigureMonobankAdapters();
 
 var app = builder.Build();
+await app.RunMigrations();
 
 if (app.Environment.IsDevelopment())
 {
