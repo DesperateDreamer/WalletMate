@@ -15,8 +15,4 @@
       <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
     </ItemGroup>
 
-    <ItemGroup>
-      <ProjectReference Include="..\WalletMate.DAL.Entities\WalletMate.DAL.Entities.csproj" />
-    </ItemGroup>
-
 </Project>

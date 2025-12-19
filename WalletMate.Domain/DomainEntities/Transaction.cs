@@ -6,7 +6,7 @@ namespace WalletMate.Domain.DomainEntities;
 public class Transaction : BaseEntity
 {
     public decimal Amount { get; set; }
-    public string Description { get; set; }
+    public string Description { get; set; } = string.Empty;
     public string? Comment { get; set; }
     public Currency Currency { get; set; }
     public DateTime CreatedOn { get; set; }

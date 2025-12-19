@@ -159,7 +159,7 @@ public class AccountService(IAccountRepository accountRepository, IBankProviderP
                 Balance = bankAccount.Balance / 100m,
                 Currency = (Currency)bankAccount.CurrencyCode,
                 UserId = userId,
-                Transactions = transactions
+                Transactions = transactions ?? []
             };
 
             newAccounts.Add(account);
