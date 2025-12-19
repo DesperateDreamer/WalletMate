@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <LangVersion>12</LangVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\WalletMate.Adapters.Out.Shared.Http\WalletMate.Adapters.Out.Shared.Http.csproj" />
+      <ProjectReference Include="..\WalletMate.Domain\WalletMate.Domain.csproj" />
+    </ItemGroup>
+
+</Project>

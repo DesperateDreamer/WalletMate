@@ -1,0 +1,6 @@
+@WalletMate.Adapters.In.API_HostAddress = http://localhost:5081
+
+GET {{WalletMate.Adapters.In.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
