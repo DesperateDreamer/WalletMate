@@ -1,6 +1,11 @@
 using WalletMate.Adapters.In.API.Configurations;
 using WalletMate.Adapters.In.API.Extensions;
 using WalletMate.Adapters.In.API.Middleware;
+using WalletMate.Adapters.Out.Cache;
+using WalletMate.Adapters.Out.Database;
+using WalletMate.Adapters.Out.Monobank;
+using WalletMate.Adapters.Out.Shared.Http;
+using WalletMate.Application;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +19,13 @@ builder.ConfigureDbContext();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.ConfigureSecurityAdapters();
+builder.Services.ConfigureApplicationAdapters();
+builder.Services.ConfigureDatabaseAdapters();
+builder.Services.ConfigureCacheAdapters();
+builder.Services
+    .ConfigureSharedHttpAdapters()
+    .ConfigureMonobankAdapters();
 
 var app = builder.Build();
 

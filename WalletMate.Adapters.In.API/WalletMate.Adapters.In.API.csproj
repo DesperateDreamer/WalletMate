@@ -21,8 +21,11 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\WalletMate.Adapters.Out.Cache\WalletMate.Adapters.Out.Cache.csproj" />
       <ProjectReference Include="..\WalletMate.Adapters.Out.Database.Migrations\WalletMate.Adapters.Out.Database.Migrations.csproj" />
       <ProjectReference Include="..\WalletMate.Adapters.Out.Database\WalletMate.Adapters.Out.Database.csproj" />
+      <ProjectReference Include="..\WalletMate.Adapters.Out.Monobank\WalletMate.Adapters.Out.Monobank.csproj" />
+      <ProjectReference Include="..\WalletMate.Adapters.Out.Shared.Http\WalletMate.Adapters.Out.Shared.Http.csproj" />
       <ProjectReference Include="..\WalletMate.Application\WalletMate.Application.csproj" />
     </ItemGroup>
 
