@@ -1,3 +1,4 @@
+using WalletMate.Adapters.In.API.Configurations;
 using WalletMate.Adapters.In.API.Extensions;
 using WalletMate.Adapters.In.API.Middleware;
 
@@ -8,6 +9,7 @@ builder.Configuration.AddUserSecrets<Program>();
 builder.ConfigureSwagger();
 builder.ConfigureJwtAuthentication();
 builder.ConfigureAuthorization();
+builder.ConfigureDbContext();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();

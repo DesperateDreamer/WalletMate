@@ -30,6 +30,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WalletMate.Adapters.Out.Sha
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WalletMate.Adapters.Out.Cache", "WalletMate.Adapters.Out.Cache\WalletMate.Adapters.Out.Cache.csproj", "{E512493D-3463-4E42-8733-E74B4D1D2F0B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WalletMate.Adapters.Out.Database.Migrations", "WalletMate.Adapters.Out.Database.Migrations\WalletMate.Adapters.Out.Database.Migrations.csproj", "{29BDAE8E-7969-4DB2-860A-97F03E353B4C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -96,5 +98,9 @@ Global
 		{E512493D-3463-4E42-8733-E74B4D1D2F0B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E512493D-3463-4E42-8733-E74B4D1D2F0B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E512493D-3463-4E42-8733-E74B4D1D2F0B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{29BDAE8E-7969-4DB2-860A-97F03E353B4C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{29BDAE8E-7969-4DB2-860A-97F03E353B4C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{29BDAE8E-7969-4DB2-860A-97F03E353B4C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{29BDAE8E-7969-4DB2-860A-97F03E353B4C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
