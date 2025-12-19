@@ -5,6 +5,13 @@ using WalletMate.Application.Exceptions;
 namespace WalletMate.Adapters.In.API.Middleware;
 
 // Chain of the Responsibility pattern
+/// <summary>
+/// Middleware that handles exceptions occurring during the processing of HTTP requests in the application.
+/// </summary>
+/// <remarks>
+/// This middleware is responsible for capturing exceptions, distinguishing between application-specific
+/// exceptions and unexpected exceptions, and responding with appropriate HTTP responses.
+/// </remarks>
 public class ExceptionHandlerMiddleware(RequestDelegate next)
 {
     public async Task InvokeAsync(HttpContext context)

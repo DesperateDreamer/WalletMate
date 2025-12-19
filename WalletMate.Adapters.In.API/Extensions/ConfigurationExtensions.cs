@@ -9,22 +9,11 @@ namespace WalletMate.Adapters.In.API.Extensions;
 
 public static class ConfigurationExtensions
 {
-    // public static void ConfigureInAppServices(this WebApplicationBuilder builder)
-    // {
-    //     builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
-    //     builder.Services.AddScoped<IPasswordService, PasswordService>();
-    //     builder.Services.AddScoped<IUserService, UserService>();
-    //     builder.Services.AddScoped<ICategoryService, CategoryService>();
-    //     builder.Services.AddScoped<IAccountService, AccountService>();
-    //     builder.Services.AddScoped<ITransactionService, TransactionService>();
-    //     builder.Services.AddScoped<ITokenService, TokenService>();
-    //     builder.Services.AddScoped<IAuthService, AuthService>();
-    //     builder.Services.AddScoped<ITransactionSortingStrategy, SortByDateStrategy>();
-    //     builder.Services.AddScoped<ITransactionSortingStrategy, SortByAmountStrategy>();
-    //     builder.Services.AddScoped<ITransactionSortingStrategy, SortByCurrencyStrategy>();
-    //     builder.Services.AddScoped<TransactionSortingStrategyResolver>();
-    // }
-
+    /// <summary>
+    /// Configures Swagger documentation generation for the application, including
+    /// custom OpenAPI settings, security definitions, and XML comments integration.
+    /// </summary>
+    /// <param name="builder">An instance of <see cref="WebApplicationBuilder"/> used to configure the application.</param>
     public static void ConfigureSwagger(this WebApplicationBuilder builder)
     {
         builder.Services.AddSwaggerGen(options =>
@@ -66,6 +55,10 @@ public static class ConfigurationExtensions
         });
     }
 
+    /// <summary>
+    /// Configures JWT-based authentication for the application using settings defined in the configuration.
+    /// </summary>
+    /// <param name="builder">An instance of <see cref="WebApplicationBuilder"/> used to configure the application.</param>
     public static void ConfigureJwtAuthentication(this WebApplicationBuilder builder)
     {
         var jwtSettings = builder.Configuration.GetSection("Jwt");
@@ -90,7 +83,13 @@ public static class ConfigurationExtensions
                 };
             });
     }
-    
+
+    /// <summary>
+    /// Configures authorization policies for the application, including setting
+    /// the default policy to require authenticated users using the JWT Bearer
+    /// authentication scheme.
+    /// </summary>
+    /// <param name="builder">An instance of <see cref="WebApplicationBuilder"/> used to configure the application's services.</param>
     public static void ConfigureAuthorization(this WebApplicationBuilder builder)
     {
         builder.Services.AddAuthorizationBuilder()
@@ -98,31 +97,4 @@ public static class ConfigurationExtensions
                 .RequireAuthenticatedUser()
                 .Build());
     }
-
-    // public static void ConfigureDbContext(this WebApplicationBuilder builder)
-    // {
-    //     var connectionString = builder.Configuration.GetConnectionString("PostgresConnection");
-    //
-    //     builder.Services.AddDbContext<IDataContext, DataContext>((_, options) =>
-    //     {
-    //         options
-    //             .UseNpgsql(connectionString, x => x.MigrationsAssembly("WalletMate.DAL.Migrations"));
-    //     });
-    // }
-
-    // public static void ConfigureBankClients(this WebApplicationBuilder builder)
-    // {
-    //     builder.Services.AddHttpClient("Monobank", client =>
-    //     {
-    //         client.BaseAddress = new Uri("https://api.monobank.ua");
-    //     });
-    //
-    //     builder.Services.AddHttpClient("FakeBank", client =>
-    //     {
-    //         client.BaseAddress = new Uri("https://");
-    //     });
-    //     
-    //     builder.Services.AddScoped<IHttpRequestBuilderFactory, HttpRequestBuilderFactory>();
-    //     builder.Services.AddScoped<IMonobankClient, MonobankClient>();
-    // }
 }

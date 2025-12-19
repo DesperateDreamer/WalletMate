@@ -1,5 +1,8 @@
 namespace WalletMate.Adapters.In.API.Middleware;
 
+/// <summary>
+/// Represents an error response containing a list of error messages.
+/// </summary>
 public class ErrorResponse
 {
     public List<string> Errors { get; init; } = [];
